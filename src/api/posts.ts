@@ -1,30 +1,30 @@
-import { Post } from '../Types/posts';
-import { client } from '../utils/fetchClient';
+import { type Post } from '../Types/posts'
+import { client } from '../utils/fetchClient'
 
-export const getPosts = (userId: number) => {
-  return client.get<Post[]>(`/posts?userId=${userId}`);
-};
+export const getPosts = async (userId: number): Promise<Post[]> => {
+  return await client.get<Post[]>(`/posts?userId=${userId}`)
+}
 
-export const createPost = (
+export const createPost = async (
   title: string,
   userId: number,
-  body: string,
-) => {
-  return client.post<Post>('/posts', {
+  body: string
+): Promise<Post> => {
+  return await client.post<Post>('/posts', {
     userId,
     title,
-    body,
-  });
-};
+    body
+  })
+}
 
-export const removePost = (postId: number) => {
-  return client.delete(`/posts/${postId}`);
-};
+export const removePost = async (postId: number): Promise<unknown> => {
+  return await client.delete(`/posts/${postId}`)
+}
 
-export const updatePost = (
+export const updatePost = async (
   id: number,
   title: string,
-  body: string,
-) => {
-  return client.patch<Post>(`/posts/${id}`, { title, body });
-};
+  body: string
+): Promise<Post> => {
+  return await client.patch<Post>(`/posts/${id}`, { title, body })
+}

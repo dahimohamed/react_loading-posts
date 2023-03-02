@@ -1,73 +1,144 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../PostInfo/PostInfo.scss';
-import { createPost } from '../../api/posts';
-import { Post } from '../../Types/posts';
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import React, { useContext, useState } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import '../PostInfo/PostInfo.scss'
+import { createPost } from '../../api/posts'
+import { AppContext } from '../../AppContext'
+import { FaArrowLeft } from 'react-icons/fa'
 
-interface Props {
-    addPost: (post: Post) => void,
-}
+export const CreatingPost: React.FC = () => {
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
+  const navigate = useNavigate()
 
-export const CreatingPost: React.FC<Props> = ({ addPost }) => {
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
-    const navigate = useNavigate();
+  const { addPost } = useContext(AppContext)
 
-    const addNewPost = async () => {
-        const newPost = await createPost(
-            title,
-            1,
-            body,
-        );
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const addNewPost = async () => {
+    const newPost = await createPost(
+      title,
+      1,
+      body
+    )
 
-        addPost(newPost);
-    };
-    
-    return (
-        <div className="PostInfo__header">
-            <form
-                onSubmit={(event) => {
-                    event.preventDefault();
-                    addNewPost();
-                    navigate("/");
-                }}
+    addPost(newPost)
+  }
+
+  return (
+    <div className="PostInfo__header">
+    <Link
+        to="/"
+        className="
+            text-blue-500
+            hover:text-blue-700
+            font-bold
+            block
+            mb-10"
+    >
+        <FaArrowLeft className="mr-2 inline-block" />
+
+        <h1 className="inline-block"> Posts</h1>
+    </Link>
+
+    <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+          if (!title || !body) {
+            return
+          }
+
+          addNewPost()
+          navigate('/')
+        }}
+    >
+
+        <div className="mb-4 mr-10 ml-5">
+            <label className="
+                block
+                text-gray-700
+                font-bold mb-2"
+                htmlFor="postTitle"
             >
-                <textarea
-                    cols={60}
-                    rows={2}
-                    placeholder="Post title"
-                    value={title}
-                    onChange={(event) => {
-                        setTitle(event.target.value);
+                Post Title
+            </label>
 
-                    }}
-                >
+            <input
+                className="
+                    shadow
+                    appearance-none
+                    border
+                    rounded
+                    w-full
+                    py-2
+                    px-3
+                    text-gray-700
+                    leading-tight
+                    focus:outline-none
+                    focus:shadow-outline"
 
-                </textarea>
-
-                <textarea
-                    className="PostInfo__body"
-                    cols={60}
-                    rows={5}
-                    placeholder="Post body"
-                    value={body}
-                    onChange={(event) => {
-                        setBody(event.target.value);
-
-                    }}
-                >
-
-                </textarea>
-                <br />
-
-
-                <button
-                    type="submit"
-                >
-                    add new post
-                </button>
-            </form>
-
+                id="postTitle"
+                type="text"
+                placeholder="Enter post title here"
+                value={title}
+                onChange={(event) => {
+                  setTitle(event.target.value)
+                }}
+            />
         </div>
-    );
-};
+
+        <div className="mb-4 mr-10 ml-5">
+            <label className="
+                block
+                text-gray-700
+                font-bold
+                mb-2"
+                htmlFor="postBody"
+            >
+                Post Body
+            </label>
+            <textarea
+                className="
+                    shadow
+                    appearance-none
+                    border
+                    rounded
+                    w-full
+                    py-2
+                    px-3
+                    text-gray-700
+                    leading-tight
+                    focus:outline-none f
+                    ocus:shadow-outline"
+                id="postBody"
+                rows={6}
+                placeholder="Enter post body here"
+                value={body}
+                onChange={(event) => {
+                  setBody(event.target.value)
+                }}
+            ></textarea>
+        </div>
+
+        <br />
+        <button
+            type="submit"
+            className="
+                bg-blue-500 h
+                over:bg-blue-700
+                text-white
+                font-bold
+                py-2
+                px-4
+                rounded
+                focus:outline-none
+                focus:shadow-outline
+                ml-40"
+        >
+            Save Post
+        </button>
+    </form>
+
+    </div>
+  )
+}

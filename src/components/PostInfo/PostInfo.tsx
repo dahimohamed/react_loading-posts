@@ -1,38 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
-import './PostInfo.scss';
-import { Post } from '../../Types/posts';
-
-import { CommentList } from '../CommentList';
-import { UserInfo } from '../UserInfo';
+import './PostInfo.scss'
+import { type Post } from '../../Types/posts'
 
 interface Props {
-  post: Post,
-  selectPostId: (index: number) => void,
+  post: Post
+  selectPostId: (index: number) => void
 }
 
 export const PostInfo: React.FC<Props> = ({ post, selectPostId }) => {
   const {
     id,
     title,
-    body,
-    user,
-    comments,
-  } = post;
+    body
+  } = post
 
   return (
     <div className="PostInfo">
       <div className="PostInfo__header">
         <h3 className="PostInfo__title">{title}</h3>
 
-        {user && (
-          <p>
-            {' Posted by  '}
-
-            <UserInfo user={user} />
-          </p>
-        )}
       </div>
 
       <p className="PostInfo__body">
@@ -41,20 +29,18 @@ export const PostInfo: React.FC<Props> = ({ post, selectPostId }) => {
 
       <hr />
 
-      {comments && comments.length && (
-          <CommentList comments={comments} />
-        )
-      }
-      
       <Link
         to="/post-details"
+        className="
+          text-blue-500
+          hover:text-blue-700
+          font-bold"
         onClick={() => {
-
-          selectPostId(id);
+          selectPostId(id)
         }}
       >
         Details
       </Link>
     </div>
-  );
-};
+  )
+}

@@ -1,12 +1,12 @@
-import React from 'react';
-import { Comment } from '../../Types/comments';
+import React from 'react'
+import { type Comment } from '../../Types/comments'
 
 interface Props {
-  comment: Comment,
+  comment: Comment
 }
 
 export const CommentInfo: React.FC<Props> = ({ comment }) => {
-  const { name, email, body } = comment;
+  const { name, email, body } = comment
 
   return (
     <div className="CommentInfo">
@@ -18,7 +18,10 @@ export const CommentInfo: React.FC<Props> = ({ comment }) => {
         {' by '}
 
         <a
-          className="CommentInfo__email"
+          className="
+            text-blue-500
+            hover:text-blue-700
+            font-bold"
           href={`mailto:${email}`}
         >
           {email}
@@ -29,5 +32,5 @@ export const CommentInfo: React.FC<Props> = ({ comment }) => {
         {body}
       </div>
     </div>
-  );
-};
+  )
+}

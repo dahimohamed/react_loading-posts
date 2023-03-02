@@ -1,21 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react'
+import { AppContext } from '../../AppContext'
 
-import { Post } from '../../Types/posts';
+import { PostInfo } from '../PostInfo'
 
-
-import { PostInfo } from '../PostInfo';
-
-interface Posts {
-  posts: Post[],
-  selectPostId: (index: number) => void,
-
-}
-
-export const PostList: React.FC<Posts> = ({
-  posts,
-  selectPostId,
-}) => {
-  
+export const PostList: React.FC = () => {
+  const { posts, selectPostId } = useContext(AppContext)
 
   return (
     <div className="PostList">
@@ -27,5 +16,5 @@ export const PostList: React.FC<Posts> = ({
         />
       ))}
     </div>
-  );
-};
+  )
+}

@@ -1,147 +1,177 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import '../PostInfo/PostInfo.scss';
-import { removePost, updatePost } from '../../api/posts';
-import { Post } from '../../Types/posts';
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import React, { useContext, useState } from 'react'
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai'
+import { FaArrowLeft } from 'react-icons/fa'
 
-import { CommentList } from "../CommentList";
-import { UserInfo } from "../UserInfo";
+import { Link, useNavigate } from 'react-router-dom'
+import '../PostInfo/PostInfo.scss'
+import { removePost, updatePost } from '../../api/posts'
 
-interface Props {
-    postsWithCommentsUser: Post[],
-    posts: Post[],
-    selectedPostId: number,
-    setPosts: (post: Post[]) => void,
-}
+import { UserInfo } from '../UserInfo'
+import { AppContext } from '../../AppContext'
+import { CommentList } from '../CommentList'
 
-export const PostDetails: React.FC<Props> = ({
+export const PostDetails: React.FC = () => {
+  const {
     postsWithCommentsUser,
     selectedPostId,
     posts,
-    setPosts,
-}) => {
-    const [title, setTitle] = useState(postsWithCommentsUser[selectedPostId - 1].title);
-    const [body, setBody] = useState(postsWithCommentsUser[selectedPostId - 1].body);
-    const navigate = useNavigate();
+    setPosts
+  } = useContext(AppContext)
 
-    const edditPost = async () => {
-        const updatedPost = await updatePost(selectedPostId, title, body);
+  const title = posts[selectedPostId - 1]?.title
+  const body = posts[selectedPostId - 1]?.body
 
-        const updatedPosts = posts.map(item => {
-            if (item.id === updatedPost.id) {
-                return updatedPost;
-            }
+  const [postTitle, setTitle] = useState(title)
+  const [postBody, setBody] = useState(body)
+  const navigate = useNavigate()
 
-            return item;
-        });
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const edditPost = async () => {
+    const updatedPost = await updatePost(selectedPostId, postTitle, postBody)
 
-        setPosts(updatedPosts);
+    const updatedPosts = posts.map(item => {
+      if (item.id === updatedPost.id) {
+        return updatedPost
+      }
 
+      return item
+    })
+
+    setPosts(updatedPosts)
+  }
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const deletePost = async () => {
+    const filteredTodos = posts.filter(({ id }) => id !== selectedPostId)
+
+    try {
+      await removePost(selectedPostId)
+
+      setPosts(filteredTodos)
+    } catch (error) {
+      console.log(error)
     }
-    const deletePost = async () => {
-        const filteredTodos = posts.filter(({ id }) => id !== selectedPostId);
+  }
 
-        try {
-            await removePost(selectedPostId);
+  console.log(postsWithCommentsUser)
 
-            setPosts(filteredTodos);
-
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
-    return (
+  return (
         <>
-            <Link to="/">
-                <h1>{`<- Posts`}</h1>
+            <Link
+                to="/"
+                className="
+                    text-blue-500
+                    hover:text-blue-700
+                    font-bold"
+            >
+                <FaArrowLeft className="mr-2 inline-block" />
+
+                <h1 className="inline-block"> Posts</h1>
             </Link>
 
             <div className="PostInfo">
                 <div className="PostInfo__header">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            navigate('/creatPost');
-                        }}
-                    >
-                        Create new post
-                    </button>
+                    <div className="flex ">
+                        <button
+                            type="button"
+                            className="
+                                bg-blue-600
+                                hover:bg-blue-700
+                                text-white
+                                font-bold
+                                py-2
+                                px-4
+                                mb-5
+                                rounded
+                                ml-auto"
+
+                            onClick={() => {
+                              navigate('/creatPost')
+                            }}
+                        >
+                            + New Post
+                        </button>
+                    </div>
                     <form
                         onSubmit={(event) => {
-                            event.preventDefault();
-                            edditPost();
-                            navigate("/");
+                          event.preventDefault()
+                          edditPost()
+                          navigate('/')
                         }}
                     >
                         <textarea
-                            cols={60}
-                            rows={2}
+                            cols={80}
+                            rows={3}
+                            className="mb-10 block"
                             placeholder="Post title"
-                            value={title}
+                            value={postTitle}
                             onChange={(event) => {
-                                setTitle(event.target.value);
-
+                              setTitle(event.target.value)
                             }}
                         >
 
                         </textarea>
 
                         <textarea
-                            className="PostInfo__body"
-                            cols={60}
-                            rows={5}
+                            className="mb-2 block"
+                            cols={80}
+                            rows={6}
                             placeholder="Post body"
-                            value={body}
+                            value={postBody}
                             onChange={(event) => {
-                                setBody(event.target.value);
-
+                              setBody(event.target.value)
                             }}
                         >
 
                         </textarea>
                         <br />
 
+                        <p
+                            className="mb-8"
+                        >
+                            {' Posted by  '}
+
+                        <UserInfo user={postsWithCommentsUser[selectedPostId - 1]?.user} />
+
+                        </p>
+
                         <button
                             type="button"
+                            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-10"
                             onClick={() => {
-                                deletePost();
-                                navigate("/");
+                              deletePost()
+                              navigate('/')
                             }}
                         >
+                            <AiOutlineDelete className="mr-2 inline-block" />
                             Delete
                         </button>
 
-                        {` `}
+                        {' '}
 
                         <button
                             type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                         >
+                            <AiOutlineEdit className="mr-2 inline-block" />
                             Update
                         </button>
                     </form>
 
-
-                    <p>
-                        {' Posted by  '}
-
-                        <UserInfo user={postsWithCommentsUser[selectedPostId - 1].user} />
-                    </p>
                 </div>
-
 
                 <hr />
 
-                {postsWithCommentsUser[selectedPostId - 1].comments.length > 0
-                    ? (
-                        <CommentList comments={postsWithCommentsUser[selectedPostId - 1].comments} />
+                {postsWithCommentsUser[selectedPostId - 1]?.comments.length > 0
+                  ? (
+                        <CommentList comments={postsWithCommentsUser[selectedPostId - 1]?.comments} />
                     )
-                    : (
+                  : (
                         <b>
                             No comments yet
                         </b>
                     )}
             </div>
         </>
-    );
-};
+  )
+}
