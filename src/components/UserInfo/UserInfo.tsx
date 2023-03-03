@@ -6,14 +6,20 @@ interface Props {
   user: User | null
 }
 
-export const UserInfo: React.FC<Props> = ({ user }) => (
-  <a
-    className="
+export const UserInfo: React.FC<Props> = ({ user }) => {
+  if (user === null) {
+    return null
+  }
+
+  return (
+    <a
+      className="
       text-blue-500
       hover:text-blue-700
       font-bold"
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    href={`mailto:${user?.email}`}>
-    {user?.name}
-  </a>
-)
+
+      href={`mailto:${user?.email}`}>
+      {user?.name}
+    </a>
+  )
+}

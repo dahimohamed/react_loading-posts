@@ -15,26 +15,24 @@ interface ProviderProps {
 interface AppContextType {
   posts: Post[]
   postsWithCommentsUser: Post[]
-  selectedPostId: number
   setPosts: (post: Post[]) => void
   addPost: (post: Post) => void
-  selectPostId: (index: number) => void
+  count: number
 }
 
 export const AppContext = React.createContext<AppContextType>({
   posts: [],
   postsWithCommentsUser: [],
-  selectedPostId: 0,
   setPosts: () => { },
   addPost: () => { },
-  selectPostId: () => { }
+  count: 0
 })
 
 export const AppProvider: React.FC<ProviderProps> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([])
   const [comments, setComments] = useState<Comment[]>([])
   const [user, setUser] = useState<User | null>(null)
-  const [selectedPostId, setSelectedPostId] = useState(0)
+  const [count, setCount] = useState(0)
 
   const loadPosts = async () => {
     const loadedPosts = await getPosts(1)
@@ -60,6 +58,10 @@ export const AppProvider: React.FC<ProviderProps> = ({ children }) => {
     loadUser()
   }, [])
 
+  useEffect(() => {
+    setCount(posts.length)
+  }, [posts])
+
   const postsWithCommentsUser: Post[] = posts.map(post => ({
     ...post,
     comments,
@@ -70,16 +72,13 @@ export const AppProvider: React.FC<ProviderProps> = ({ children }) => {
     setPosts([...posts, newPost])
   }, [posts])
 
-  const selectPostId = (index: number): void => { setSelectedPostId(index) }
-
   const context = useMemo(() => ({
     posts,
     postsWithCommentsUser,
-    selectedPostId,
     setPosts,
     addPost,
-    selectPostId
-  }), [addPost, posts, postsWithCommentsUser, selectedPostId])
+    count
+  }), [addPost, posts, postsWithCommentsUser])
 
   return (
         <AppContext.Provider value={context} >

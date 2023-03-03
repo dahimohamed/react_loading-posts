@@ -1,1 +1,33 @@
-//
+.Post {
+    display: grid;
+    grid-template-columns: repeat(1, 300px);
+    justify-content: center;
+    gap: 48px;
+    margin: 0 auto;
+    padding: 20px;
+
+    @media (min-width: 480px) {
+        grid-template-columns: repeat(2, 300px);
+    }
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(3, 300px);
+    }
+
+    &__card {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 300px;
+        height: 300px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 48px;
+    }
+
+    &__card:not(:nth-child(4n)) {
+        margin-right: 48px;
+    }
+}

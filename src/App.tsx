@@ -6,11 +6,12 @@ import { PostList } from './components/PostList'
 import { AppProvider } from './AppContext'
 import { CreatingPost } from './components/CreatingPost/CreatingPost'
 import { PostDetails } from './components/PostDtails/PostDetails'
+import { Header } from './components/Header/Header'
 
 export const App: React.FC = () => (
   <AppProvider>
     <section className="App">
-      <h1 className="App__title">list of posts (User 1)</h1>
+      <Header />
 
       <Routes>
         <Route
@@ -28,7 +29,7 @@ export const App: React.FC = () => (
         />
 
         <Route
-          path='/post-details'
+          path='/post-details/:id'
           element={
             <PostDetails />
           }

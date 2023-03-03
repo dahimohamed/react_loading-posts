@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai'
 import { FaArrowLeft } from 'react-icons/fa'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import '../PostInfo/PostInfo.scss'
 import { removePost, updatePost } from '../../api/posts'
 
@@ -14,21 +14,32 @@ import { CommentList } from '../CommentList'
 export const PostDetails: React.FC = () => {
   const {
     postsWithCommentsUser,
-    selectedPostId,
     posts,
     setPosts
   } = useContext(AppContext)
 
-  const title = posts[selectedPostId - 1]?.title
-  const body = posts[selectedPostId - 1]?.body
+  const [postTitle, setTitle] = useState('')
+  const [postBody, setBody] = useState('')
 
-  const [postTitle, setTitle] = useState(title)
-  const [postBody, setBody] = useState(body)
+  const { id } = useParams<{ id: string }>()
+  const postId = Number(id)
+
+  useEffect(() => {
+    let title = ''
+    let body = ''
+
+    if (posts.length > 0) {
+      title = postsWithCommentsUser[postId - 1].title
+      body = postsWithCommentsUser[postId - 1].body
+    }
+
+    setTitle(title)
+    setBody(body)
+  }, [postsWithCommentsUser])
   const navigate = useNavigate()
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const edditPost = async () => {
-    const updatedPost = await updatePost(selectedPostId, postTitle, postBody)
+  const edditPost = async (): Promise<void> => {
+    const updatedPost = await updatePost(Number(id), postTitle, postBody)
 
     const updatedPosts = posts.map(item => {
       if (item.id === updatedPost.id) {
@@ -40,20 +51,18 @@ export const PostDetails: React.FC = () => {
 
     setPosts(updatedPosts)
   }
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const deletePost = async () => {
-    const filteredTodos = posts.filter(({ id }) => id !== selectedPostId)
+
+  const deletePost = async (): Promise<void> => {
+    const filteredTodos = posts.filter(({ id }) => id !== postId)
 
     try {
-      await removePost(selectedPostId)
+      await removePost(postId)
 
       setPosts(filteredTodos)
     } catch (error) {
       console.log(error)
     }
   }
-
-  console.log(postsWithCommentsUser)
 
   return (
         <>
@@ -131,7 +140,7 @@ export const PostDetails: React.FC = () => {
                         >
                             {' Posted by  '}
 
-                        <UserInfo user={postsWithCommentsUser[selectedPostId - 1]?.user} />
+              <UserInfo user={postsWithCommentsUser[postId - 1]?.user} />
 
                         </p>
 
@@ -162,9 +171,9 @@ export const PostDetails: React.FC = () => {
 
                 <hr />
 
-                {postsWithCommentsUser[selectedPostId - 1]?.comments.length > 0
+                {postsWithCommentsUser[postId - 1]?.comments.length > 0
                   ? (
-                        <CommentList comments={postsWithCommentsUser[selectedPostId - 1]?.comments} />
+            <CommentList comments={postsWithCommentsUser[postId - 1]?.comments} />
                     )
                   : (
                         <b>

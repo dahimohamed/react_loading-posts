@@ -6,10 +6,9 @@ import { type Post } from '../../Types/posts'
 
 interface Props {
   post: Post
-  selectPostId: (index: number) => void
 }
 
-export const PostInfo: React.FC<Props> = ({ post, selectPostId }) => {
+export const PostInfo: React.FC<Props> = ({ post }) => {
   const {
     id,
     title,
@@ -17,27 +16,25 @@ export const PostInfo: React.FC<Props> = ({ post, selectPostId }) => {
   } = post
 
   return (
-    <div className="PostInfo">
+    <div className="Post__card">
       <div className="PostInfo__header">
-        <h3 className="PostInfo__title">{title}</h3>
-
+        <h3 className="PostInfo__title block">{title}</h3>
       </div>
+
+      <br />
 
       <p className="PostInfo__body">
         {body}
       </p>
 
-      <hr />
+      <br />
 
       <Link
-        to="/post-details"
+        to={`/post-details/${id}`}
         className="
           text-blue-500
           hover:text-blue-700
           font-bold"
-        onClick={() => {
-          selectPostId(id)
-        }}
       >
         Details
       </Link>

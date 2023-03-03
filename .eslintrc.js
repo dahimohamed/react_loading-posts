@@ -12,7 +12,7 @@ module.exports = {
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: './tsconfig.json' // add this line
+        project: './tsconfig.json'
       }
     }
   ],
@@ -24,5 +24,8 @@ module.exports = {
     'react'
   ],
   rules: {
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off'
   }
 }

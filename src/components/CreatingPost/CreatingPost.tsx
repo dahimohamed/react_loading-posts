@@ -13,8 +13,7 @@ export const CreatingPost: React.FC = () => {
 
   const { addPost } = useContext(AppContext)
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const addNewPost = async () => {
+  const addNewPost = async (): Promise<void> => {
     const newPost = await createPost(
       title,
       1,
@@ -43,11 +42,6 @@ export const CreatingPost: React.FC = () => {
     <form
         onSubmit={(event) => {
           event.preventDefault()
-          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-          if (!title || !body) {
-            return
-          }
-
           addNewPost()
           navigate('/')
         }}
@@ -79,6 +73,7 @@ export const CreatingPost: React.FC = () => {
 
                 id="postTitle"
                 type="text"
+                required
                 placeholder="Enter post title here"
                 value={title}
                 onChange={(event) => {
@@ -112,6 +107,7 @@ export const CreatingPost: React.FC = () => {
                     ocus:shadow-outline"
                 id="postBody"
                 rows={6}
+                required
                 placeholder="Enter post body here"
                 value={body}
                 onChange={(event) => {
